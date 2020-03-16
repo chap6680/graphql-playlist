@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-mongoose.connect('mongodb+srv://dcuser:mongonode4@cluster0-hbcwz.mongodb.net/test?retryWrites=true&w=majority');
+mongoose.connect('mongodb+srv://dcuser:mongonode4@cluster0-hbcwz.mongodb.net/graphqlPlaylist?retryWrites=true&w=majority');
 mongoose.connection.once('open',()=>{
     console.log('connected to mongodb');
 })
