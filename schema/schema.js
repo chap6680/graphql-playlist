@@ -3,7 +3,7 @@ const _ = require('lodash');
 const Book = require('../models/book');
 const Author = require('../models/author');
 
-const {GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, GraphQLList} = graphql;
+const {GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, GraphQLList, GraphQLNonNull} = graphql;
 
 /* var books = [
     {name: 'Name of the Wind', genre:'Fantasy', id: '1', authorId: '1'},
@@ -33,6 +33,7 @@ const BookType = new GraphQLObjectType ({
             resolve(parent, args) {
                 console.log(parent);
                 //return _.find(authors, {id: parent.authorId});
+                return Author.findById(parent.authorId)
             }
         }
 
@@ -50,6 +51,7 @@ const AuthorType = new GraphQLObjectType ({
             resolve(parent, args){
                 console.log(parent);
                // return _.filter(books, {authorId: parent.id})
+               return Book.find({authorId: parent.id})
             }
         }
     })
@@ -65,6 +67,7 @@ const RootQuery = new GraphQLObjectType({
             resolve(parent, args) {
                 console.log(typeof(args.id));
                // return _.find(books,{id:args.id});
+               return Book.findById(args.id)
             }
         },
         author: {
@@ -72,18 +75,21 @@ const RootQuery = new GraphQLObjectType({
             args: {id:{type: GraphQLID}},
             resolve(parent, args) {
               //  return _.find(authors,{id:args.id});
+              return Author.findById(args.id)
             }
         },
         books: {
             type: new GraphQLList(BookType),
             resolve(parent, args){
             //return books
+            return Book.find({})
             }
         },
         authors: {
             type: new GraphQLList(AuthorType),
             resolve(parent, args){
               //  return authors
+              return Author.find({})
             }
         }
     }
@@ -95,7 +101,7 @@ fields: {
     addAuthor: {
         type: AuthorType,
         args: {
-            name: {type: GraphQLString},
+            name: {type: new GraphQLNonNull(GraphQLString)},
             age: {type: GraphQLInt}
         },
         resolve(parent, args){
